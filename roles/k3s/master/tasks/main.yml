@@ -1,5 +1,10 @@
 ---
 
+- name: Get zerotier name
+  shell: |-
+    ip l | grep 'zt' | awk '{print substr($2,1,length($2)-1)}'
+  register: zerotier_name
+
 - name: Copy K3s service file
   register: k3s_service
   template:
@@ -77,3 +82,16 @@
     src: /usr/local/bin/k3s
     dest: /usr/local/bin/crictl
     state: link
+
+#- name: Copy Traefik Dashboard config
+#  template:
+#    src: "traefik-dashboard.yaml"
+#    dest: "/tmp/traefik-dashboard.yaml"
+#    owner: k3s
+#    group: k3s
+#    mode: 0644
+#
+#- name: Apply Traefik Dashboard config
+#  shell: |-
+#    kubectl apply -f  /tmp/traefik-dashboard.yaml 
+

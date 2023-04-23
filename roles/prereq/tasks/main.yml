@@ -52,3 +52,23 @@
     path: /etc/sudoers
     validate: 'visudo -cf %s'
   when: ansible_distribution in ['CentOS', 'Red Hat Enterprise Linux']
+
+- name: Copy Zerotier local config
+  template:
+    src: "local.conf"
+    dest: "/var/lib/zerotier-one/local.conf"
+    owner: root
+    group: root
+    mode: 0644
+ 
+- name: Setup Zerotier
+  shell: |-
+    zerotier-cli set 8286ac0e47f14e80  allowManaged=1
+    zerotier-cli set 8286ac0e47f14e80  allowGlobal=1
+    zerotier-cli set 8286ac0e47f14e80  allowDefault=1
+    service zerotier-one restart
+- name: Open vxlan port 8472
+  shell: |-
+    iptables -I INPUT -p UDP --dport 8472 -j ACCEPT
+    iptables -I INPUT -p UDP --dport 443 -j ACCEPT
+    iptables-save

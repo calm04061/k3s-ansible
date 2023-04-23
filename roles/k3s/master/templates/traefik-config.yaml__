@@ -1,0 +1,42 @@
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: traefik
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    env:
+      - name: TZ
+        value: Asia/Shanghai
+    deployment:
+      replicas: 2
+#      additionalVolumes:
+#        - name: plugins
+#          hostPath:
+#            path: /data/traefik/plugins
+#    additionalVolumeMounts:
+#      - name: plugins
+#        mountPath: /plugins-storage
+    experimental:
+      plugins:
+        enabled: true
+    ports:
+      websecure:
+        http3:
+          enabled: true
+          advertisedPort: 443
+    ingressRoute:
+      dashboard:
+        entryPoints: ["web"]
+        matchRule: Host(`traefik.calm0406.com`)
+    additionalArguments:
+      - "--experimental.plugins.traefik-oauth-upstream.modulename=github.com/Koellewe/traefik-oauth-upstream"
+      - "--experimental.plugins.traefik-oauth-upstream.version=v1.0.1"
+    logs:
+      general:
+        level: ERROR
+     
+
+   
+
+

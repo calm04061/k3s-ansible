@@ -1,5 +1,10 @@
 ---
 
+- name: Get zerotier name
+  shell: |-
+    ip l | grep 'zt' | awk '{print substr($2,1,length($2)-1)}'
+  register: zerotier_name
+
 - name: Copy K3s service file
   template:
     src: "k3s.service.j2"

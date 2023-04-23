@@ -36,6 +36,11 @@
     - /etc/rancher/k3s
     - /var/lib/kubelet
     - /var/lib/rancher/k3s
+    - /var/lib/cni
+- name: del network
+  shell: |-
+    ip link del cni0
+    ip link del flannel.1
 
 - name: daemon_reload
   systemd:
